@@ -1,0 +1,59 @@
+<div class="wallet">
+  <aside class="left-wallet">
+    <div class="wallet-head">
+      <h1> My Wallets </h1>
+      <div class="modal-open" (click)="openAddAccountDialog()">+
+      </div>
+
+    </div>
+
+    <div class="cc-select">
+
+      <li *ngFor="let account of accounts; let i = index;" style="list-style-type:none;">
+        <div class="cc visa" (click)="selectedAccount(account, i)" [ngClass]="{
+                    'cc-active ' : isSelected(account)}">
+          <div class="cc-img-main"></div>
+          <div class="cc-num">{{account.cardNumber}}</div>
+          <div class="cc-date">valid thru: {{account.expirationDate}}</div>
+        </div>
+
+
+      </li>
+    </div>
+
+  </aside>
+  <div class="right-trans">
+    <div *ngIf="selectedItem==null; else elseBlock"><h1>Empty Wallet</h1></div>
+    <ng-template #elseBlock>
+      <div>
+        <h1> Current Balance </h1>
+        <h4 id="balance">{{selectedItem.sold}} {{this.getSign(selectedItem)}}</h4>
+      </div>
+      <button mat-raised-button color="primary"  style="margin:5px;" (click)="openWithdrawDialog()">Withdraw</button>
+      <button mat-raised-button color="primary" style="margin:5px;" (click)="openDepositDialog()">Deposit</button>
+      <button mat-raised-button color="primary" style="margin:5px;" (click)="deleteAccount()">Delete Account</button>
+
+      <div class="trans-list" style="display: block;">
+        <li *ngFor="let transaction of transactions" style="list-style-type:none;">
+
+          <div class="trans trans-visa "(click)="openReceiptDialog()">
+            <div class="trans-details"><span class="trans-plus"></span>
+              <h3 class="trans-name ">ceva despre tranzactie</h3>          <h5
+                class="trans-type-date">{{transaction.transactionType}}
+                -
+                {{transaction.date}}</h5></div>
+
+            <div class="trans-amt"
+                 [ngClass]="{
+                    'amt-red' : transaction.transactionType === 'TRANSACTION_WITHDRAW',
+                    'amt-green' : transaction.transactionType === 'TRANSACTION_DEPOSIT'
+              }">{{transaction.amount}} {{this.getSign(selectedItem)}}</div>
+
+          </div>
+        </li>
+
+      </div>
+    </ng-template>
+  </div>
+</div>
+

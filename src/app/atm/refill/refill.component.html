@@ -1,0 +1,20 @@
+<div class="mat-button" style="float: right" (click)="this.closeDialog()"><h1>x</h1></div>
+
+<div  class="container-fluid">
+  <div>
+    <h1> insert amount of money</h1>
+  </div>
+
+  <form [formGroup]="notesForm" (ngSubmit)="onSubmit()" novalidate>
+    <div formArrayName="notes">
+      <li *ngFor="let n of notess(); let i=index"  style="list-style-type:none;">
+        <div [formGroupName]="i">
+          {{n.value.notes.type}}<input type="number"   required   formControlName="count" >
+        </div>
+      </li>
+    </div>
+    <button mat-raised-button color="primary" type="submit" >Send</button>
+  </form>
+</div>
+
+

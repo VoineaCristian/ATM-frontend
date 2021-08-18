@@ -1,0 +1,43 @@
+<div class="wallet">
+  <aside class="left-wallet">
+    <div class="wallet-head">
+      <h1> Drawers </h1>
+    </div>
+
+
+    <div class="cc-select">
+
+      <li *ngFor="let money of this.moneys; let i = index;" style="list-style-type:none;">
+        <div class="cc" (click)="select(money)">
+          <div class="cc-img-main">{{money.currency}}</div>
+          <div class="cc-num"></div>
+          <div class="cc-date">valid thru:</div>
+        </div>
+      </li>
+    </div>
+  </aside>
+<div class="right-trans">
+  <div *ngIf="selectedMoney==null; else elseBlock"><h1>Empty Wallet</h1></div>
+  <ng-template #elseBlock>
+    <div>
+      <h1> Current Balance </h1>
+      <h4 id="balance"> {{this.balance}} <span>&#8364;</span></h4>
+    </div>
+    <button mat-raised-button color="primary"  style="margin:5px;" (click)="openRefillDialog()" >Refill</button>
+    <button mat-raised-button color="primary" style="margin:5px;" >Deposit</button>
+    <button mat-raised-button color="primary" style="margin:5px;" >Delete Account</button>
+
+    <div class="trans-list" style="display: block;">
+      <li *ngFor="let stack of this.stacks" style="list-style-type:none;">
+
+        <div class="trans trans-visa"  >
+          <div class="trans-details">{{stack.notes.type}} : {{stack.count}}<span class="trans-plus"></span>
+         </div>
+
+        </div>
+      </li>
+
+    </div>
+  </ng-template>
+</div>
+</div>

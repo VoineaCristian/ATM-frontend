@@ -1,0 +1,13 @@
+<div class="mat-button" style="float: right" (click)="this.closeDialog()"><h1>x</h1></div>
+
+<div class="container-fluid">
+    <div >
+      <h1> insert amount of money</h1>
+    </div>
+      <form #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+        <input type="number" name="amount" ngModel required>
+        <button mat-raised-button color="primary" type="submit">Send</button>
+
+      </form>
+
+</div>
