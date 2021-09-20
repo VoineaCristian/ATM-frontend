@@ -12,11 +12,10 @@ export class AdminService {
   username: string;
   selectedItem: Account;
   constructor(private httpClient: HttpClient, private route: ActivatedRoute) {
-    this.username = this.route.snapshot.paramMap.get('username');
   }
 
   getBalance(): Observable<any> {
     console.log(this.username);
-    return this.httpClient.get('/api/atm/balance?username=' + this.route.snapshot.paramMap.get('username'));
+    return this.httpClient.get('/api/atm/balance');
   }
 }

@@ -17,11 +17,11 @@ export class AccountService {
   }
   addAccounts(account: Account, username: string): Observable<any> {
     console.log(this.username);
-    return this.httpClient.post('/api/accounts/' + username , account);
+    return this.httpClient.post('/api/accounts/', account);
   }
   deleteAccount(account: Account, username: string): Observable<any> {
     console.log(this.username);
-    return this.httpClient.delete('/api/accounts/' + username + "?accountId="+account.id );
+    return this.httpClient.delete('/api/accounts/?accountId='+account.id );
   }
 
 

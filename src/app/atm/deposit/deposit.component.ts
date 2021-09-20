@@ -22,6 +22,7 @@ export class DepositComponent implements OnInit {
   notesForm: FormGroup;
   banknotes: Notes[] = [];
   private username: string;
+  isValid = false;
 
   constructor(private atmService: AtmServiceService, private activatedRoute: ActivatedRoute,
               @Inject(MAT_DIALOG_DATA) public data: {
@@ -49,10 +50,6 @@ export class DepositComponent implements OnInit {
 
   }
 
-  // addNumber() {
-  //   const control = <FormArray>this.notesForm.controls['type'];
-  //   control.push(new FormControl())
-  // }
   closeDialog() {
     this.dialogRef.close();
   }
@@ -77,8 +74,13 @@ export class DepositComponent implements OnInit {
     this.notes.push(this.newNote(n));
   }
 
+  onInput(){
+   this.isValid = this.notess().filter(value => {return value.value.count>0}).length > 0;
+  }
+
   onSubmit() {
     let stacks: Stacks[] = this.notesForm.get("notes").value;
+    stacks = stacks.filter(stacks=>(stacks.count != null && stacks.count > 0));
     let money: Money = new Money(this.data.account.currency, stacks);
     this.atmService.deposit(money, this.data.username, this.data.account.id).subscribe();
     this.closeDialog();

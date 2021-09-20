@@ -5,12 +5,13 @@ import {ListTransactionsComponent} from './transaction/list-transactions/list-tr
 import {AddAccountComponent} from "./account/add-account/add-account.component";
 import {AdminBoardComponent} from "./admin-board/admin-board.component";
 import {LoginComponent} from "./auth/login/login/login.component";
+import {AuthComponent} from "./auth/auth/auth.component";
 
 const routes: Routes = [
   {path: 'accounts', component: ListAccountsComponent,},
-  {path: 'admin/:username', component: AdminBoardComponent,},
+  {path: 'admin', component: AdminBoardComponent,},
   {path: 'transactions', component: ListTransactionsComponent},
-  {path: 'login', component: LoginComponent}];
+  {path: 'login', component: AuthComponent}];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

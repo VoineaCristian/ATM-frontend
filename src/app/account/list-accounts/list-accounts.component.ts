@@ -9,6 +9,8 @@ import {MAT_DIALOG_DATA, MAT_DIALOG_DEFAULT_OPTIONS, MatDialog, MatDialogRef} fr
 import {WithdrawComponent} from "../../atm/withdraw/withdraw.component";
 import {DepositComponent} from "../../atm/deposit/deposit.component";
 import {GenerateReceiptComponent} from "../../atm/generate-receipt/generate-receipt.component";
+import {TokenStorageService} from "../../auth/token/token-storage.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-list-accounts',
@@ -26,40 +28,42 @@ export class ListAccountsComponent implements OnInit {
   selectedItem: Account;
   transactions: Transaction[];
   dialogRef: MatDialogRef<any>;
-  indexOfSelectedItem;
+  indexOfSelectedItem = 0;
 
 
   constructor(
     private accountService: AccountService,
     private _modalService: NgbModal,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private tokenStorage: TokenStorageService,
+    private router: Router,
+
   ) {
   }
 
 
-
   ngOnInit() {
+    if(this.tokenStorage.getUser().role == "ROLE_ADMIN"){
+      this.router.navigate(["/admin"]);
+    }
     this.getAccounts();
   }
 
   getAccounts() {
     this.accountService.getAccounts().subscribe((response: AccountContainer) => {
       this.accounts = response.accounts;
-      this.count = response.nrOfElements;
-
-      if (this.selectedItem == null) {
-        this.selectedItem = this.accounts[0];
-      } else {
-        this.selectedItem = this.accounts[this.indexOfSelectedItem];
+      this.count = this.accounts.length;
+      if (this.indexOfSelectedItem == this.count) {
+        this.indexOfSelectedItem = this.count - 1;
       }
+      this.selectedItem = this.accounts[this.indexOfSelectedItem];
       this.transactions = this.selectedItem.transactions;
+      console.log(this.indexOfSelectedItem);
     });
   }
 
   selectedAccount(account: Account, index: number) {
-    if (this.dialogRef) {
-      this.dialogRef.close();
-    }
+
     this.indexOfSelectedItem = index;
     this.selectedItem = this.accounts[index];
     this.transactions = this.selectedItem.transactions;
@@ -86,21 +90,18 @@ export class ListAccountsComponent implements OnInit {
 
   openAddAccountDialog(): void {
     this.openDialog(AddAccountComponent);
-    this.dialogRef.afterClosed().subscribe(()=>{
+    this.dialogRef.afterClosed().subscribe(() => {
       this.indexOfSelectedItem = 0;
       this.selectedItem = this.accounts[0];
       this.transactions = this.selectedItem.transactions;
     })
-
   }
 
   openWithdrawDialog(): void {
     this.openDialog(WithdrawComponent);
-    this.dialogRef.afterClosed().subscribe(()=>{
-      this.selectedItem = this.accounts[0];
-      this.transactions = this.selectedItem.transactions;
+    this.dialogRef.afterClosed().subscribe(() => {
+      this.getAccounts();
     })
-
   }
 
   openDepositDialog(): void {
@@ -122,23 +123,30 @@ export class ListAccountsComponent implements OnInit {
     this.reloadAfterClose(this.dialogRef);
   }
 
-  openReceiptDialog(): void {
-    this.openDialog(GenerateReceiptComponent);
-  }
 
-  deleteAccount(){
-    this.accountService.deleteAccount(this.selectedItem, this.accountService.username).subscribe();
-
-    if(this.accounts.length == 0){
-      this.selectedItem = null;
-      this.indexOfSelectedItem = 0;
-      this.transactions = [];
-    } else {
-      this.indexOfSelectedItem = 0;
+  openReceiptDialog(selTransaction: Transaction): void {
+    if (this.dialogRef) {
+      this.dialogRef.close();
     }
-    this.getAccounts();
-
+    this.dialogRef = this.dialog.open(GenerateReceiptComponent, {
+      data: {
+        transaction: selTransaction,
+        currency: this.getSign(this.selectedItem),
+      }
+    });
+    this.reloadAfterClose(this.dialogRef);
   }
 
+  delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 
+  deleteAccount() {
+    if (confirm("Are you sure you want to delete this card?")) {
+      this.accountService.deleteAccount(this.selectedItem, this.accountService.username).subscribe(() => {
+          this.getAccounts();
+        }
+      );
+    }
+  }
 }

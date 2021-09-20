@@ -7,6 +7,10 @@ import {AddAccountComponent} from "../../account/add-account/add-account.compone
 import {FormBuilder} from "@angular/forms";
 import {jsPDF} from 'jspdf';
 import * as _html2canvas from "html2canvas";
+import {Stacks} from "../../stacks/stacks";
+import {TokenStorageService} from "../../auth/token/token-storage.service";
+import {Transaction} from "../../transaction/transaction";
+import {transition} from "@angular/animations";
 
 
 const typesJobs = [1,2,3];
@@ -19,51 +23,52 @@ const html2canvas: any = _html2canvas;
 })
 
 export class GenerateReceiptComponent implements OnInit {
-  typeOfJobs = typesJobs;
-  username = this.data.username;
-  USERS = [
-    {
-      "id": 1,
-      "name": "Leanne Graham",
-      "email": "sincere@april.biz",
-      "phone": "1-770-736-8031 x56442"
-    },
-    {
-      "id": 2,
-      "name": "Ervin Howell",
-      "email": "shanna@melissa.tv",
-      "phone": "010-692-6593 x09125"
-    },
-
-  ];
 
   @ViewChild('pdfTable', {static: false}) pdfTable: ElementRef;
-  name = 'Angular Html To Pdf ';
+  username = this.tokenStorage.getUser().username;
+  stacks: Stacks[];
   constructor(private atmService: AtmServiceService, private activatedRoute: ActivatedRoute,
               @Inject(MAT_DIALOG_DATA) public data: {
-                username: string,
-                account: Account
+                transaction: Transaction,
+                currency: string,
               },
               public dialogRef: MatDialogRef<AddAccountComponent>,
-              private fb: FormBuilder)
+              private fb: FormBuilder,
+              private tokenStorage: TokenStorageService)
   {}
 
   ngOnInit(): void {
+    this.stacks = this.data.transaction.stacks;
+    this.username = this.tokenStorage.getUser().username;
   }
+
+  getAction(){
+    if(this.data.transaction.transactionType == "TRANSACTION_DEPOSIT"){
+      return 'deposited';
+    }
+    if(this.data.transaction.transactionType == "TRANSACTION_WITHDRAW"){
+      return 'received';
+    }
+  }
+
+  public getNrOfNotes(){
+    return this.data.transaction.stacks.reduce((acc, val) => acc += val.count, 0);
+  }
+
   public openPDF():void {
-    let DATA = document.getElementById('htmlData');
+    var data = document.getElementById('htmlData');  //Id of the table
+    html2canvas(data).then(canvas => {
+      // Few necessary setting options
+      let imgWidth = 208;
+      let pageHeight = 295;
+      let imgHeight = canvas.height * imgWidth / canvas.width;
+      let heightLeft = imgHeight;
 
-    html2canvas(DATA).then(canvas => {
-
-      let fileWidth = 208;
-      let fileHeight = canvas.height * fileWidth / canvas.width;
-
-      const FILEURI = canvas.toDataURL('image/png')
-      let PDF = new jsPDF('p', 'mm', 'a4');
+      const contentDataURL = canvas.toDataURL('image/png')
+      let pdf = new jsPDF('p', 'mm', 'a4'); // A4 size page of PDF
       let position = 0;
-      PDF.addImage(FILEURI, 'PNG', 0, position, fileWidth, fileHeight)
-
-      PDF.save('angular-demo.pdf');
+      pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight)
+      pdf.save('MYPdf.pdf'); // Generated PDF
     });
   }
 

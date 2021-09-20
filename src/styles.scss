@@ -1,39 +1,39 @@
 /* You can add global styles to this file, and also import other style files */
 
 /* Importing Bootstrap SCSS file. */
+
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
-@import '~bootstrap/scss/bootstrap';
+//@import '~bootstrap/scss/bootstrap';
 
 
 body{
   height: 100vh;
   width: 100vw;
   margin: 0 auto;
-  background-color: rgb(255, 204, 102);
+  background-color: rgba(151, 190, 208, 0.38);
 }
 
 .container {
   font-family: 'Open Sans', sans-serif;
-  background-color: rgb(255, 204, 102);
+  padding: 40px 0px 0px;
   width: 100vw;
   height: 100vh;
   margin: auto;
-  padding: 40px 0px 40px 0px;
 
 }
 
+.wallet-container{
+  padding:40px;
+}
 .wallet {
   margin: 0 auto;
-  border-radius: 5px;
-  background-color: #FFFFFF;
-  box-shadow: 0px 8px 20px 6px rgb(255, 178, 22);
-  -webkit-box-shadow: 0px 8px 20px 6px rgb(255, 178, 22);
-  -moz-box-shadow: 0px 8px 20px 6px rgb(255, 178, 22);
   height: 680px;
   max-width: 900px;
   min-width: 800px;
   display: flex;
+  width: 100vw;
+  margin: auto;
 }
 
 .left-wallet {
@@ -171,7 +171,7 @@ h4 {
 
 .cc-select {
   margin-top: 34px;
-  overflow-y: scroll;
+  overflow-x: hidden;
   max-height: 540px;
   padding: 5px;
 }
@@ -340,10 +340,7 @@ h4 {
   display: none;
 }
 
-form {
-  width: 75%;
-  float: right;
-}
+
 
 form>input,
 form select {

@@ -2,15 +2,17 @@
 
 <div  class="container-fluid">
   <div>
-    <h1> insert amount of money</h1>
+    <h1> insert number of bills</h1>
   </div>
+
 
   <form [formGroup]="notesForm" (ngSubmit)="onSubmit()" novalidate>
     <div formArrayName="notes">
       <li *ngFor="let n of notess(); let i=index"  style="list-style-type:none;">
-        <div [formGroupName]="i">
-          {{n.value.notes.type}}<input type="number"   required   formControlName="count" >
-        </div>
+        <mat-form-field class="example-full-width" appearance="fill" [formGroupName]="i">
+
+          {{n.value.notes.type}}<input matInput  type="number"  min="0" oninput="validity.valid||(value='');" required   formControlName="count" >
+        </mat-form-field>
       </li>
     </div>
     <button mat-raised-button color="primary" type="submit" >Send</button>

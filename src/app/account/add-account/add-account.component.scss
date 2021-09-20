@@ -137,6 +137,8 @@ Form
           color: transparent;
           text-shadow: 0 0 0 #000;
         }
+        ::-ms-expand {
+          display: none;}
 
       }
     }
@@ -146,7 +148,6 @@ Form
 
   button {
     width: 100%;
-    outline: none!important;
     background: linear-gradient(180deg, #49a09b, #3d8291);
     text-transform: uppercase;
     font-weight: bold;
@@ -324,7 +325,8 @@ Credit Card
   .ccv {
     height: 36px;
     background: #fff;
-    width: 91%;
+    width: 91%;      fill: #fff;
+
     border-radius: 5px;
     top: 110px;
     left: 0;
@@ -358,3 +360,4 @@ Credit Card
     max-width: 100%;
   }
 }
+

@@ -1,43 +1,66 @@
-<div class="wallet">
-  <aside class="left-wallet">
-    <div class="wallet-head">
-      <h1> Drawers </h1>
-    </div>
+<div class="wallet-container">
+  <div class="wallet">
 
+    <aside class="left-wallet">
+      <div class="wallet-head">
+        <h1> Drawers </h1>
+      </div>
+      <div class="cc-select">
 
-    <div class="cc-select">
+        <li *ngFor="let money of this.moneys; let i = index;" style="list-style-type:none;">
+          <div class="cc" (click)="select(money, i)" [ngClass]="{
+                    'cc-active ' : isSelected(money)}">
+            <h1>
+            <span class="flag-icon"
+                  [ngClass]="{
+                    'flag-icon-eu' : (getFlagMapIndex(money)===0),
+                    'flag-icon-ro' : (getFlagMapIndex(money)===1)
+                    }">
+            </span>
+            </h1>
+            <div class="cc-img-main">{{money.currency}}</div>
+            <div class="cc-num"></div>
+            <div class="cc-date">valid thru:</div>
+          </div>
+        </li>
 
-      <li *ngFor="let money of this.moneys; let i = index;" style="list-style-type:none;">
-        <div class="cc" (click)="select(money)">
-          <div class="cc-img-main">{{money.currency}}</div>
-          <div class="cc-num"></div>
-          <div class="cc-date">valid thru:</div>
+      </div>
+    </aside>
+
+    <div class="right-trans">
+      <div *ngIf="selectedMoney==null; else elseBlock"><h1>Empty Wallet</h1></div>
+      <ng-template #elseBlock>
+        <div>
+          <h1> Current Balance </h1>
+          <h4 id="balance"> {{this.balance}} {{this.getSign(selectedMoney.currency)}}</h4>
         </div>
-      </li>
-    </div>
-  </aside>
-<div class="right-trans">
-  <div *ngIf="selectedMoney==null; else elseBlock"><h1>Empty Wallet</h1></div>
-  <ng-template #elseBlock>
-    <div>
-      <h1> Current Balance </h1>
-      <h4 id="balance"> {{this.balance}} <span>&#8364;</span></h4>
-    </div>
-    <button mat-raised-button color="primary"  style="margin:5px;" (click)="openRefillDialog()" >Refill</button>
-    <button mat-raised-button color="primary" style="margin:5px;" >Deposit</button>
-    <button mat-raised-button color="primary" style="margin:5px;" >Delete Account</button>
+        <button mat-raised-button color="primary" style="margin:5px;" (click)="openRefillDialog()">Refill</button>
 
-    <div class="trans-list" style="display: block;">
-      <li *ngFor="let stack of this.stacks" style="list-style-type:none;">
+        <div class="trans-list" style="display: block;">
+          <table mat-table [dataSource]="this.stacks" multiTemplateDataRows class="mat-elevation-z8">
+            <ng-container matColumnDef="type">
+              <th mat-header-cell *matHeaderCellDef> Banknotes</th>
+              <td mat-cell *matCellDef="let stack"> {{stack.notes.type}} </td>
 
-        <div class="trans trans-visa"  >
-          <div class="trans-details">{{stack.notes.type}} : {{stack.count}}<span class="trans-plus"></span>
-         </div>
+            </ng-container>
+            <ng-container matColumnDef="value">
+              <th mat-header-cell *matHeaderCellDef> Value</th>
+              <td mat-cell *matCellDef="let stack"> {{stack.notes.value}} </td>
+
+            </ng-container>
+            <ng-container matColumnDef="count">
+              <th mat-header-cell *matHeaderCellDef> Count</th>
+              <td mat-cell *matCellDef="let stack"> {{stack.count}} </td>
+
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+            <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
+
+
+          </table>
 
         </div>
-      </li>
-
+      </ng-template>
     </div>
-  </ng-template>
-</div>
+  </div>
 </div>

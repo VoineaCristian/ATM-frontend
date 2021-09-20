@@ -1,13 +1,58 @@
-<div class="mat-button" style="float: right" (click)="this.closeDialog()"><h1>x</h1></div>
+<div *ngIf="(isClicked==false); else elseBlock">
+  <mat-dialog-actions align="end">
 
-<div class="container-fluid">
-    <div >
-      <h1> insert amount of money</h1>
+  <button mat-button style="float: right" (click)="this.closeDialog()"><h1>x</h1></button>
+  </mat-dialog-actions>
+  <form
+    name="form"
+    #f="ngForm"
+    (ngSubmit)="f.form.valid && onSubmit()"
+    novalidate>
+    <mat-form-field appearance="fill">
+      <mat-label id="amount" class="label">Amount</mat-label>
+      <input
+        matInput
+        type="number"
+        name="amount"
+        [(ngModel)]="form.amount"
+        required
+        #amount="ngModel"
+        max="{{availableAmount}}"
+      />
+    </mat-form-field>
+    <div *ngIf="true">Available sum = {{availableAmount - amount.value}}
+      <mat-error
+        *ngIf="amount.errors?.required && f.submitted">Non-zero value required
+      </mat-error>
+      <mat-error
+                 *ngIf="amount.errors?.max">Not Enough Money
+      </mat-error>
+
     </div>
-      <form #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
-        <input type="number" name="amount" ngModel required>
-        <button mat-raised-button color="primary" type="submit">Send</button>
+    <button mat-raised-button color="primary">Withdraw</button>
 
-      </form>
+
+  </form>
 
 </div>
+<ng-template #elseBlock>
+  <div *ngIf="(isError || isSuccess) == false; else elseBlock">
+    <mat-spinner></mat-spinner>
+  </div>
+  <ng-template #elseBlock>
+    <div *ngIf="isError == true; else elseBlock">
+      <mat-icon class="material-icons amt-red" style="font-size: 37px">error</mat-icon>
+      <h1 mat-dialog-title> {{this.errorMessage}}</h1>
+     </div>
+    <ng-template #elseBlock>
+      <mat-icon class="material-icons amt-green" style="font-size: 37px">check_circle_outline</mat-icon>
+      <h1 mat-dialog-title>Success!!</h1>
+
+    </ng-template>
+    <mat-dialog-actions align="end">
+
+    <button mat-raised-button color="primary" (click)="closeDialog()">Ok</button>
+    </mat-dialog-actions>
+
+  </ng-template>
+</ng-template>

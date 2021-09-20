@@ -7,14 +7,18 @@
 
   <form [formGroup]="notesForm" (ngSubmit)="onSubmit()" novalidate>
     <div formArrayName="notes">
-    <li *ngFor="let n of notess(); let i=index"  style="list-style-type:none;">
-      <div [formGroupName]="i">
-          {{n.value.notes.type}}<input type="number"   required   formControlName="count" >
-      </div>
-    </li>
+      <li *ngFor="let n of notess(); let i=index"  style="list-style-type:none;">
+        <mat-form-field class="example-full-width" appearance="fill" [formGroupName]="i">
+          <mat-label>{{n.value.notes.type}}</mat-label>
+          <input matInput type="number"  min="0" oninput="validity.valid||(value='');" (input)="onInput()"  formControlName="count" >
+        </mat-form-field>
+        <mat-error>
+        </mat-error>
+      </li>
     </div>
-    <button mat-raised-button color="primary" type="submit" >Send</button>
+    <button mat-raised-button [disabled]="!isValid" color="primary" type="submit" >Send</button>
   </form>
+
   </div>
 
 

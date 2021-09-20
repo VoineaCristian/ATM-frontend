@@ -9,8 +9,11 @@ import {Money} from "../../money/money";
 import {AtmServiceService} from "../atm-service.service";
 import {Account} from "../../account/account";
 import {Notes} from "../../notes/notes";
-import { map } from 'rxjs/operators'
+import {map} from 'rxjs/operators'
 import {AccountContainer} from "../../account/account-container";
+import {HttpResponse} from "@angular/common/http";
+import {OverlayContainer} from '@angular/cdk/overlay';
+import {MatDialog} from '@angular/material/dialog';
 @Component({
   selector: 'app-withdraw',
   templateUrl: './withdraw.component.html',
@@ -19,43 +22,53 @@ import {AccountContainer} from "../../account/account-container";
 
 export class WithdrawComponent implements OnInit {
 
-  // stacks: Stacks[] = [];
-  // notesForm = new FormGroup({
-  //   type: this.fb.array([
-  //     new FormControl()
-  //   ]),
-  //   value: new FormControl('20')
-  // });
+  isClicked = false;
+  availableAmount = 100;
+  form: any = {
+    amount: null,
+  };
+  isError = false;
+  isSuccess = false;
 
-  // arr: string[] = [
-  //   "EURO_5",
-  //   "EURO_10",
-  //   "EURO_20",
-  //   "EURO_50",
-  //   "EURO_100",
-  //   "EURO_200",
-  //   "EURO_500"
-  // ];
-  private username: string;
+  errorMessage = "";
+
+
   constructor(private atmService: AtmServiceService, private activatedRoute: ActivatedRoute,
-              @Inject(MAT_DIALOG_DATA) public data: {username: string,
-                                                    account: Account},
+              @Inject(MAT_DIALOG_DATA) public data: {
+                username: string,
+                account: Account
+              },
               public dialogRef: MatDialogRef<AddAccountComponent>,
-              private fb: FormBuilder){
+              private fb: FormBuilder,
+              overlayContainer: OverlayContainer) {
   }
 
   ngOnInit() {
+    this.availableAmount = this.data.account.sold;
+    console.log(this.data.account.sold);
   }
 
 
-
-  closeDialog(){
+  closeDialog() {
     this.dialogRef.close();
   }
-  onSubmit(formBody: NgForm) {
-    let amount: number = formBody.value.amount;
-    this.atmService.withdraw(this.data.username, this.data.account.id, amount).subscribe();
-    this.closeDialog();
+
+  onSubmit() {
+
+    this.isClicked = true;
+    const amount = this.form.amount;
+    this.atmService.withdraw(this.data.username, this.data.account.id, amount).subscribe((response: HttpResponse<any>) => {
+        setTimeout(() => {
+          this.isSuccess = true;
+        }, 2000)
+      },
+      err => {
+        setTimeout(() => {
+          this.isError = true;
+          this.errorMessage = err.error;
+        }, 2000)
+
+      });
   }
 
 

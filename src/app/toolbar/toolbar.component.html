@@ -1,0 +1,12 @@
+<mat-toolbar color="primary">
+  <span>ATM</span>
+  <span class="example-spacer"></span>
+
+
+  <div *ngIf="this.isLoggedIn()">
+    <button mat-button (click)="logoutDialog()">
+      <mat-icon>logout</mat-icon>
+      Logout
+    </button>
+  </div>
+</mat-toolbar>

@@ -36,12 +36,12 @@
       <div class="trans-list" style="display: block;">
         <li *ngFor="let transaction of transactions" style="list-style-type:none;">
 
-          <div class="trans trans-visa "(click)="openReceiptDialog()">
+          <div class="trans trans-visa "(click)="openReceiptDialog(transaction)">
             <div class="trans-details"><span class="trans-plus"></span>
               <h3 class="trans-name ">ceva despre tranzactie</h3>          <h5
                 class="trans-type-date">{{transaction.transactionType}}
                 -
-                {{transaction.date}}</h5></div>
+                {{transaction.date| date: 'dd/MMM/yyyy hh:mm:ss'}}</h5></div>
 
             <div class="trans-amt"
                  [ngClass]="{
@@ -56,4 +56,5 @@
     </ng-template>
   </div>
 </div>
+
 
